@@ -42,11 +42,7 @@ public class ProductService {
     }
 
     public ProductResponse createProduct(ProductRequest productRequest) {
-        Product product = Product.builder()
-                .name(productRequest.getName())
-                .price(productRequest.getPrice())
-                .stock(productRequest.getStock())
-                .build();
+        Product product = productMapper.productRequestToProduct(productRequest);
         productRepository.save(product);
 
         return productMapper.productToProductResponse(product);
@@ -56,11 +52,9 @@ public class ProductService {
         Optional<Product> productById = productRepository.findById(id);
 
         if (productById.isPresent()) {
-            Product product = productById.get();
-            product.setName(productRequest.getName());
-            product.setPrice(productRequest.getPrice());
-            product.setStock(productRequest.getStock());
-
+            Product product = productMapper.productRequestToProduct(productRequest);
+            product.setId(productById.get().getId());
+            
             productRepository.save(product);
 
             return productMapper.productToProductResponse(product);

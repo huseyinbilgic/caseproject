@@ -27,6 +27,10 @@ public class Order extends BaseEntity {
 
     private BigDecimal price;
 
+    private BigDecimal totalPrice;
+
+    private String code;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id")
     private Cart cart;

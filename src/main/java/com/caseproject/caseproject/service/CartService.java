@@ -49,13 +49,13 @@ public class CartService {
 
     public CartResponse createCart(CreateEmptyCart createEmptyCart) {
         Optional<Customer> customerById = customerRepository.findById(createEmptyCart.getCustomerId());
-        Cart byCustomer = cartRepository.findByCustomer(customerById.get());;
-
-        if (byCustomer != null) {
-            return cartMapper.cartToCartResponse(byCustomer);
-        }
 
         if (customerById.isPresent()) {
+            Optional<Cart> cartByCustomer = cartRepository.findByCustomer(customerById.get());
+            if (cartByCustomer.isPresent()) {
+                return cartMapper.cartToCartResponse(cartByCustomer.get());
+            }
+
             Cart cart = Cart.builder()
                     .customer(customerById.get())
                     .totalPrice(BigDecimal.ZERO)
@@ -79,7 +79,7 @@ public class CartService {
             if (optionalOrder.isPresent()) {
                 cart.getOrders().remove(optionalOrder.get());
                 BigDecimal totalPrice = cart.getOrders().stream()
-                        .map(order -> BigDecimal.valueOf(order.getAmount()).multiply(order.getPrice()))
+                        .map(order -> order.getTotalPrice())
                         .reduce(BigDecimal.ZERO, BigDecimal::add);
                 cart.setTotalPrice(totalPrice);
                 cartRepository.save(cart);
@@ -91,6 +91,7 @@ public class CartService {
 
             throw new NotFoundException("Invalid Order ID");
         }
+
         throw new NotFoundException("Invalid Cart ID");
     }
 }

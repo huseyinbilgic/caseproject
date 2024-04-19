@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.caseproject.caseproject.requests.PlaceOrderRequest;
+import com.caseproject.caseproject.response.CartResponse;
 import com.caseproject.caseproject.response.OrderResponse;
 import com.caseproject.caseproject.service.OrderService;
 
@@ -17,16 +18,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
-
 @RestController
 @RequestMapping("/api/order")
 @RequiredArgsConstructor
 public class OrderController {
 
     private final OrderService orderService;
-    
+
     @PostMapping
-    public ResponseEntity<OrderResponse> placeOrder(@RequestBody @Valid PlaceOrderRequest placeOrderRequest) {
+    public ResponseEntity<CartResponse> placeOrder(@RequestBody @Valid PlaceOrderRequest placeOrderRequest) {
         return ResponseEntity.ok(orderService.placeOrder(placeOrderRequest));
     }
 
@@ -34,5 +34,10 @@ public class OrderController {
     public ResponseEntity<List<OrderResponse>> findAllByCustomerId(@PathVariable Long customerId) {
         return ResponseEntity.ok(orderService.findAllByCustomerId(customerId));
     }
-    
+
+    @GetMapping("/byCode/{code}")
+    public ResponseEntity<OrderResponse> findByCode(@PathVariable String code) {
+        return ResponseEntity.ok(orderService.findByCode(code));
+    }
+
 }

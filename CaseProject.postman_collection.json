@@ -294,6 +294,27 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "GetOrderForCode",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/api/order/byCode/e8db391e-786d-4821-a301-91e290343f60",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"order",
+						"byCode",
+						"e8db391e-786d-4821-a301-91e290343f60"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

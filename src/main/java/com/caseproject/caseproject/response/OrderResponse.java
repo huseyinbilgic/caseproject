@@ -15,4 +15,6 @@ public class OrderResponse {
     private BigDecimal price;
     private Long cartId;
     private Long productId;
+    private BigDecimal totalPrice;
+    private String code;
 }
