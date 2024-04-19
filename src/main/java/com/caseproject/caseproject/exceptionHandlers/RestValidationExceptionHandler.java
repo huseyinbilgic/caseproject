@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class RestValidationExceptionHandler {
+    
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, List<String>>> handleValidationException(MethodArgumentNotValidException ex) {
         Map<String, List<String>> errors = ex.getBindingResult().getAllErrors().stream()

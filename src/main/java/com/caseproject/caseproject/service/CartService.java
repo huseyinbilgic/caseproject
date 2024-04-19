@@ -14,6 +14,7 @@ import com.caseproject.caseproject.exceptionHandlers.errors.NotFoundException;
 import com.caseproject.caseproject.mapper.CartMapper;
 import com.caseproject.caseproject.repository.CartRepository;
 import com.caseproject.caseproject.repository.CustomerRepository;
+import com.caseproject.caseproject.repository.OrderRepository;
 import com.caseproject.caseproject.requests.CreateEmptyCart;
 import com.caseproject.caseproject.requests.RemoveProductFromCart;
 import com.caseproject.caseproject.response.CartResponse;
@@ -26,6 +27,7 @@ public class CartService {
 
     private final CartRepository cartRepository;
     private final CustomerRepository customerRepository;
+    private final OrderRepository orderRepository;
     private final CartMapper cartMapper;
 
     public List<CartResponse> fetchCarts() {
@@ -47,6 +49,11 @@ public class CartService {
 
     public CartResponse createCart(CreateEmptyCart createEmptyCart) {
         Optional<Customer> customerById = customerRepository.findById(createEmptyCart.getCustomerId());
+        Cart byCustomer = cartRepository.findByCustomer(customerById.get());;
+
+        if (byCustomer != null) {
+            return cartMapper.cartToCartResponse(byCustomer);
+        }
 
         if (customerById.isPresent()) {
             Cart cart = Cart.builder()
@@ -76,6 +83,8 @@ public class CartService {
                         .reduce(BigDecimal.ZERO, BigDecimal::add);
                 cart.setTotalPrice(totalPrice);
                 cartRepository.save(cart);
+
+                orderRepository.delete(optionalOrder.get());
 
                 return cartMapper.cartToCartResponse(cart);
             }

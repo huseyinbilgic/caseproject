@@ -40,7 +40,7 @@ public class OrderService {
 
         if (cartById.isPresent() && productById.isPresent()) {
             if (productById.get().getStock() < placeOrderRequest.getAmount()) {
-                throw new NotFoundException("There are not enough products in stock.");
+                throw new NotFoundException("Out of Stock");
             }
 
             Order order = Order.builder()
@@ -77,9 +77,9 @@ public class OrderService {
         Optional<Customer> customerById = customerRepository.findById(customerId);
 
         if (customerById.isPresent()) {
-            List<Cart> byCustomer = cartRepository.findByCustomer(customerById.get());
+            Cart byCustomer = cartRepository.findByCustomer(customerById.get());
 
-            return byCustomer.stream().map(cart -> cart.getOrders()).flatMap(List::stream)
+            return byCustomer.getOrders().stream()
                     .map(order -> orderMapper.orderToOrderResponse(order))
                     .collect(Collectors.toList());
         }
